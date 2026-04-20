@@ -2,4 +2,5 @@ __pycache__
 .env
 venv
 sqlite.db
-
+.agents/
+skills-lock.json

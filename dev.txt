@@ -1,7 +1,7 @@
 alembic
 annotated-types
 anyio
-bcrypt
+argon2-cffi
 click
 ecdsa
 fastapi

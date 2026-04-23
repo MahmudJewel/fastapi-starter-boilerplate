@@ -9,8 +9,8 @@ from passlib.context import CryptContext
 from jose import JWTError, jwt
 
 # import 
-from app.models import user as UserModel
-from app.schemas.user import UserCreate, UserUpdate, Token
+from app.models.user_model import User as UserModel
+from app.schemas.user_schema import UserCreate, UserUpdate, Token
 from app.core.settings import SECRET_KEY, REFRESH_SECRET_KEY, ALGORITHM
 from app.core.settings import ACCESS_TOKEN_EXPIRE_MINUTES
 from app.core.dependencies import get_db, oauth2_scheme
@@ -19,11 +19,11 @@ pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
 
 # get user by email 
 def get_user_by_email(db: Session, email: str):
-    return db.query(UserModel.User).filter(UserModel.User.email == email).first()
+    return db.query(UserModel).filter(UserModel.email == email).first()
 
 # get user by id
 def get_user_by_id(db: Session, user_id: int):
-    db_user = db.query(UserModel.User).filter(UserModel.User.id == user_id).first()
+    db_user = db.query(UserModel).filter(UserModel.id == user_id).first()
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
     return db_user
@@ -31,7 +31,7 @@ def get_user_by_id(db: Session, user_id: int):
 # crete new user 
 def create_new_user(db: Session, user: UserCreate):
     hashed_password = pwd_context.hash(user.password)
-    new_user = UserModel.User(email=user.email, password=hashed_password, first_name=user.first_name, last_name=user.last_name)
+    new_user = UserModel(email=user.email, password=hashed_password, first_name=user.first_name, last_name=user.last_name)
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
@@ -40,7 +40,7 @@ def create_new_user(db: Session, user: UserCreate):
 
 # get all user 
 def read_all_user(db: Session, skip: int, limit: int):
-    return db.query(UserModel.User).offset(skip).limit(limit).all()
+    return db.query(UserModel).offset(skip).limit(limit).all()
 
 # update user
 def update_user(db: Session, user_id: int, user: UserUpdate):
@@ -131,4 +131,3 @@ def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], db: Annotate
         return user
     except JWTError:
         raise credentials_exception
-

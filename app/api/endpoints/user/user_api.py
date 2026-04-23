@@ -6,8 +6,8 @@ from sqlalchemy.orm import Session
 
 # import
 from app.core.dependencies import get_db, oauth2_scheme 
-from app.schemas.user import User, UserCreate, UserUpdate
-from app.api.endpoints.user import functions as user_functions
+from app.schemas.user_schema import User, UserCreate, UserUpdate
+from app.api.endpoints.user import user_function as user_functions
 
 user_module = APIRouter()
 
@@ -57,5 +57,3 @@ async def update_user( user_id: int, user: UserUpdate, db: Session = Depends(get
                )
 async def delete_user( user_id: int, db: Session = Depends(get_db)):
     return user_functions.delete_user(db, user_id)
-
-
